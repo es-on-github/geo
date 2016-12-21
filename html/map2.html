@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Intercalls Geolocation test </title>
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+
+html, body {
+
+height: 100%;
+
+margin: 0;
+
+}
+
+
+
+#map {
+
+height: 100%;
+
+} </style>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-maZvMQa8bw4r1mGIFuMXtpC5TbpXrKs&sensor=true"> </script>
+
+<script type="text/javascript">
+
+/** 
+
+* Called on the intiial page load. 
+
+*/ 
+
+var map; 
+
+var marker; 
+
+//Added by Edwin Apr 13, 2011 
+var MyLat, MyLon; 
+var MyLocation; 
+var geocoder; 
+var infowindow = new google.maps.InfoWindow(); 
+//End - Added by Edwin Apr 13, 2011 
+
+function init() { 
+
+//Added by Edwin Apr 13, 2011 
+geocoder = new google.maps.Geocoder(); 
+//End - Added by Edwin Apr 13, 2011 
+
+var mapCenter = new google.maps.LatLng(0, 0); 
+
+map = new google.maps.Map(document.getElementById('map'), { 
+
+zoom: 2, 
+
+//center: new google.maps.LatLng(14.597466, 121.0092), 
+
+center: new google.maps.LatLng(0,0), 
+
+mapTypeId: google.maps.MapTypeId.ROADMAP 
+
+}); 
+
+
+
+marker = new google.maps.Marker(); 
+
+window.setTimeout(getUsersLocation, 2000); 
+
+
+} 
+
+
+
+function getUsersLocation() { 
+
+if (navigator.geolocation) { 
+
+navigator.geolocation.getCurrentPosition(function(position) { 
+
+var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); 
+
+map.panTo(pos); 
+map.setZoom(14);
+
+
+marker.setPosition(pos); 
+
+//Added by Edwin Apr 13, 2011 
+MyLat=position.coords.latitude; 
+MyLon=position.coords.longitude; 
+////marker.setTitle("You are here :" + MyLat + " / " + MyLon); 
+//End - Added by Edwin Apr 13, 2011 
+
+////marker.setMap(map); 
+
+
+//Added by Edwin Apr 13, 2011 
+MyLocation = "Your location: <b>" + MyLat + " / " + MyLon + "</b>"; 
+var latlng = new google.maps.LatLng(MyLat, MyLon); 
+geocoder.geocode({'latLng': latlng}, function(results, status) { 
+if (status == google.maps.GeocoderStatus.OK) { 
+if (results[1]) { 
+map.setZoom(15); 
+map.panTo(pos); 
+
+var image = 'images/bus.ico';
+    var myLatLng = new google.maps.LatLng(MyLat , MyLon );
+    var beachMarker = new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+        icon: image
+    });
+
+
+
+//marker = new google.maps.Marker({ 
+//position: latlng, 
+//map: map 
+//}); 
+//infowindow.setContent(" Welcome to <br>Intercall's Geolocation Test<br>You are here:<br>" + results[1].formatted_address); 
+//infowindow.open(map, marker); 
+} 
+} else { 
+alert("Geocoder failed due to: " + status); 
+} 
+}); 
+//End - Added by Edwin Apr 13, 2011 
+
+
+
+
+
+
+
+}, function() { 
+
+// Can find the users location 
+
+// Cheat for the talk 
+
+marker.setPosition(new google.maps.LatLng(14.597466, 121.0092)); 
+
+marker.setMap(map); 
+
+
+}); 
+
+} else { 
+
+marker.setPosition(new google.maps.LatLng(14.597466, 121.0092)); 
+
+marker.setMap(map); 
+
+} 
+
+} 
+
+
+
+// Register an event listener to fire when the page finishes loading. 
+
+google.maps.event.addDomListener(window, 'load', init); 
+
+</script>
+</head>
+
+<body>
+<div style="width: 100%; height: 100%" id="map"></div>
+<div id="MyLocation"></div>
+</body>
+
+</html>
